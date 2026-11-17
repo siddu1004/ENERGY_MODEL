@@ -1,0 +1,783 @@
+{
+  "log": [
+    {
+      "seq": 1,
+      "kind": "recompute",
+      "reason": "initial run"
+    },
+    {
+      "seq": 2,
+      "kind": "question",
+      "key": "floors",
+      "priority": "HIGH",
+      "text": "The scan covers one 600 m\u00b2 floor but the chiller is 250 TR. I assumed 14 floors so the building peak is about 90 % of capacity. Every load and saving scales with this number. How many floors does the chiller serve?"
+    },
+    {
+      "seq": 3,
+      "kind": "question",
+      "key": "vfd",
+      "priority": "HIGH",
+      "text": "The optimised schedule relies on variable speed for AHU fans, CHW pumps and tower fans. I don't know which have VFDs installed. Approval is blocked until this is confirmed."
+    },
+    {
+      "seq": 4,
+      "kind": "question",
+      "key": "calibration",
+      "priority": "MEDIUM",
+      "text": "Building loads are uncalibrated (no measured data). Savings are model-to-model predictions."
+    },
+    {
+      "seq": 5,
+      "kind": "assumption_assessed",
+      "name": "alpha_wall",
+      "range": [
+        0.5,
+        0.7
+      ],
+      "swing": 0.010617783112694375,
+      "asked": false
+    },
+    {
+      "seq": 6,
+      "kind": "assumption_assessed",
+      "name": "T_out_max",
+      "range": [
+        36.0,
+        40.0
+      ],
+      "swing": 0.11346247260950433,
+      "asked": true
+    },
+    {
+      "seq": 7,
+      "kind": "question",
+      "key": "assume_T_out_max",
+      "priority": "MEDIUM",
+      "text": "'T_out_max' is assumed (38.0). Over 36.0\u201340.0 daily energy swings 11.3%. Can you confirm it?"
+    },
+    {
+      "seq": 8,
+      "kind": "answer",
+      "key": "floors",
+      "answer": "confirmed by engineer"
+    },
+    {
+      "seq": 9,
+      "kind": "change",
+      "param": "floors_served",
+      "old": 14,
+      "new": 14,
+      "old_source": "assumed",
+      "source": "engineer",
+      "reason": "answer to 'floors'"
+    },
+    {
+      "seq": 10,
+      "kind": "change",
+      "param": "baseline_CHWS",
+      "old": 6.0,
+      "new": 7.0,
+      "old_source": "hypothetical",
+      "source": "engineer",
+      "reason": "engineer: operate at 7 \u00b0C, return stays 12 \u00b0C"
+    },
+    {
+      "seq": 11,
+      "kind": "recompute",
+      "reason": "baseline_CHWS: 6.0 \u2192 7.0"
+    },
+    {
+      "seq": 12,
+      "kind": "question",
+      "key": "flow_range",
+      "priority": "HIGH",
+      "text": "With CHWS 7.0 \u00b0C / CHWR 12.0 \u00b0C the \u0394T is 5.0 K, so delivering full chiller capacity needs 151 m\u00b3/h. The pump is rated for \u2248126 m\u00b3/h (+20%). Above the pump's range, full capacity cannot be delivered."
+    },
+    {
+      "seq": 13,
+      "kind": "answer",
+      "key": "flow_range",
+      "answer": "accepted: building peak < full capacity"
+    },
+    {
+      "seq": 14,
+      "kind": "measurement",
+      "hour": 15,
+      "measured": 690.0,
+      "predicted": 814.068120866045,
+      "error_pct": 17.980887082035512,
+      "note": "BMS trend, engineer-provided"
+    },
+    {
+      "seq": 15,
+      "kind": "recompute",
+      "reason": "calibration 1.000 \u2192 0.832"
+    },
+    {
+      "seq": 16,
+      "kind": "question",
+      "key": "more_data",
+      "priority": "MEDIUM",
+      "text": "Calibrated on 1 point(s) only. One hour cannot separate load error from schedule or weather error. Can you share at least a week of hourly BMS chiller data?"
+    },
+    {
+      "seq": 17,
+      "kind": "consistency_check",
+      "flow": 25,
+      "dT": 5,
+      "load": 690,
+      "implied": 523.25,
+      "error": -0.2416666666666667
+    },
+    {
+      "seq": 18,
+      "kind": "question",
+      "key": "energy_balance",
+      "priority": "CONFLICT",
+      "text": "Measurements disagree: \u1e41\u00b7cp\u00b7\u0394T = 25 \u00d7 4.186 \u00d7 5 = 523 kW, but the reported load is 690 kW (-24%). At least one is wrong (flow-meter calibration, sensor placement, or a different time window). I will not use any of them until resolved."
+    },
+    {
+      "seq": 19,
+      "kind": "answer",
+      "key": "energy_balance",
+      "answer": "flow meter under-reads; flow value discarded"
+    },
+    {
+      "seq": 20,
+      "kind": "question",
+      "key": "unsafe_baseline_CHWS",
+      "priority": "SAFETY",
+      "text": "baseline_CHWS = 3.0 rejected: outside safe range 5.0\u201312.0 (below 5 \u00b0C risks evaporator freezing / outside chiller data; above 12 \u00b0C the coil cannot dehumidify). Nothing was changed."
+    },
+    {
+      "seq": 21,
+      "kind": "rejected_change",
+      "param": "baseline_CHWS",
+      "value": 3.0,
+      "reason": "below 5 \u00b0C risks evaporator freezing / outside chiller data; above 12 \u00b0C the coil cannot dehumidify"
+    },
+    {
+      "seq": 22,
+      "kind": "answer",
+      "key": "unsafe_baseline_CHWS",
+      "answer": "request withdrawn by engineer"
+    },
+    {
+      "seq": 23,
+      "kind": "recommendation",
+      "id": "R1",
+      "saving_pct": 33.321137589927986,
+      "confidence": "MEDIUM"
+    },
+    {
+      "seq": 24,
+      "kind": "change",
+      "param": "fan_min",
+      "old": 0.5,
+      "new": 0.75,
+      "old_source": "assumed",
+      "source": "engineer",
+      "reason": "engineer: ventilation minimum"
+    },
+    {
+      "seq": 25,
+      "kind": "recompute",
+      "reason": "fan_min: 0.5 \u2192 0.75"
+    },
+    {
+      "seq": 26,
+      "kind": "question",
+      "key": "humidity_margin",
+      "priority": "MEDIUM",
+      "text": "To save energy the optimiser raises CHWS until the humidity limit binds: dew-point margin for RH \u2264 55% is only 0.00 K in some hours. If the latent load is higher than modelled, indoor RH would exceed the limit. Trade-off: energy vs humidity risk."
+    },
+    {
+      "seq": 27,
+      "kind": "answer",
+      "key": "humidity_margin",
+      "answer": "tighten RH limit: comfort priority"
+    },
+    {
+      "seq": 28,
+      "kind": "change",
+      "param": "RH_max",
+      "old": 0.55,
+      "new": 0.5,
+      "old_source": "assumed",
+      "source": "engineer",
+      "reason": "answer to 'humidity_margin'"
+    },
+    {
+      "seq": 29,
+      "kind": "recompute",
+      "reason": "RH_max: 0.55 \u2192 0.5"
+    },
+    {
+      "seq": 30,
+      "kind": "recommendation",
+      "id": "R2",
+      "saving_pct": 28.16045898217864,
+      "confidence": "MEDIUM"
+    },
+    {
+      "seq": 31,
+      "kind": "approval_blocked",
+      "id": "R2",
+      "by": [
+        "vfd"
+      ]
+    },
+    {
+      "seq": 32,
+      "kind": "answer",
+      "key": "vfd",
+      "answer": "AHU + CHW pump VFD; tower constant speed"
+    },
+    {
+      "seq": 33,
+      "kind": "change",
+      "param": "vfd_ahu",
+      "old": null,
+      "new": true,
+      "old_source": "unknown",
+      "source": "engineer",
+      "reason": "answer to 'vfd'"
+    },
+    {
+      "seq": 34,
+      "kind": "change",
+      "param": "vfd_chw_pump",
+      "old": null,
+      "new": true,
+      "old_source": "unknown",
+      "source": "engineer",
+      "reason": "answer to 'vfd'"
+    },
+    {
+      "seq": 35,
+      "kind": "change",
+      "param": "vfd_tower",
+      "old": null,
+      "new": false,
+      "old_source": "unknown",
+      "source": "engineer",
+      "reason": "answer to 'vfd'"
+    },
+    {
+      "seq": 36,
+      "kind": "recompute",
+      "reason": "vfd_ahu: None \u2192 True, vfd_chw_pump: None \u2192 True, vfd_tower: None \u2192 False"
+    },
+    {
+      "seq": 37,
+      "kind": "recommendation",
+      "id": "R3",
+      "saving_pct": 24.030196612072473,
+      "confidence": "MEDIUM"
+    },
+    {
+      "seq": 38,
+      "kind": "decision",
+      "id": "R3",
+      "decision": "approve",
+      "note": "engineer approval after VFD confirmation"
+    }
+  ],
+  "questions": [
+    {
+      "key": "floors",
+      "priority": "HIGH",
+      "text": "The scan covers one 600 m\u00b2 floor but the chiller is 250 TR. I assumed 14 floors so the building peak is about 90 % of capacity. Every load and saving scales with this number. How many floors does the chiller serve?",
+      "options": [
+        "Confirm",
+        "Enter floor count",
+        "Chiller also serves other loads"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "confirmed by engineer"
+    },
+    {
+      "key": "vfd",
+      "priority": "HIGH",
+      "text": "The optimised schedule relies on variable speed for AHU fans, CHW pumps and tower fans. I don't know which have VFDs installed. Approval is blocked until this is confirmed.",
+      "options": [
+        "All have VFDs",
+        "Specify which ones",
+        "None (constant speed)"
+      ],
+      "blocking": "approval",
+      "status": "answered",
+      "answer": "AHU + CHW pump VFD; tower constant speed"
+    },
+    {
+      "key": "calibration",
+      "priority": "MEDIUM",
+      "text": "Building loads are uncalibrated (no measured data). Savings are model-to-model predictions.",
+      "options": [
+        "Provide BMS chiller load / energy data"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "1 measured point at 15:00"
+    },
+    {
+      "key": "assume_T_out_max",
+      "priority": "MEDIUM",
+      "text": "'T_out_max' is assumed (38.0). Over 36.0\u201340.0 daily energy swings 11.3%. Can you confirm it?",
+      "options": [
+        "Confirm value",
+        "Enter value",
+        "Run both as scenarios"
+      ],
+      "blocking": "",
+      "status": "open",
+      "answer": ""
+    },
+    {
+      "key": "flow_range",
+      "priority": "HIGH",
+      "text": "With CHWS 7.0 \u00b0C / CHWR 12.0 \u00b0C the \u0394T is 5.0 K, so delivering full chiller capacity needs 151 m\u00b3/h. The pump is rated for \u2248126 m\u00b3/h (+20%). Above the pump's range, full capacity cannot be delivered.",
+      "options": [
+        "Accept: building peak needs less than full capacity",
+        "Keep \u0394T 6 K (raise return set-point)",
+        "Provide pump curve"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "accepted: building peak < full capacity"
+    },
+    {
+      "key": "more_data",
+      "priority": "MEDIUM",
+      "text": "Calibrated on 1 point(s) only. One hour cannot separate load error from schedule or weather error. Can you share at least a week of hourly BMS chiller data?",
+      "options": [
+        "Upload BMS trend",
+        "Accept single-point calibration"
+      ],
+      "blocking": "",
+      "status": "open",
+      "answer": ""
+    },
+    {
+      "key": "energy_balance",
+      "priority": "CONFLICT",
+      "text": "Measurements disagree: \u1e41\u00b7cp\u00b7\u0394T = 25 \u00d7 4.186 \u00d7 5 = 523 kW, but the reported load is 690 kW (-24%). At least one is wrong (flow-meter calibration, sensor placement, or a different time window). I will not use any of them until resolved.",
+      "options": [
+        "Flow reading is wrong",
+        "\u0394T sensors are wrong",
+        "Load figure is wrong",
+        "Check the time window"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "flow meter under-reads; flow value discarded"
+    },
+    {
+      "key": "unsafe_baseline_CHWS",
+      "priority": "SAFETY",
+      "text": "baseline_CHWS = 3.0 rejected: outside safe range 5.0\u201312.0 (below 5 \u00b0C risks evaporator freezing / outside chiller data; above 12 \u00b0C the coil cannot dehumidify). Nothing was changed.",
+      "options": [
+        "Use a value within 5.0\u201312.0",
+        "Explain the special case (needs supervisor override)"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "request withdrawn by engineer"
+    },
+    {
+      "key": "humidity_margin",
+      "priority": "MEDIUM",
+      "text": "To save energy the optimiser raises CHWS until the humidity limit binds: dew-point margin for RH \u2264 55% is only 0.00 K in some hours. If the latent load is higher than modelled, indoor RH would exceed the limit. Trade-off: energy vs humidity risk.",
+      "options": [
+        "Accept",
+        "Tighten RH limit (costs energy)",
+        "Provide measured indoor RH"
+      ],
+      "blocking": "",
+      "status": "answered",
+      "answer": "tighten RH limit: comfort priority"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "R1",
+      "summary": "Hourly set-point schedule (CHWS, CHW pump, AHU fan, tower fan)",
+      "daily_kWh_baseline": 2713.419577676491,
+      "daily_kWh_optimised": 1809.2773068068645,
+      "saving_pct": 33.321137589927986,
+      "annual_saving_cost": 2603929.740104524,
+      "setpoints": {
+        "8": {
+          "Ts": 6.47,
+          "fw": 0.66,
+          "fa": 0.69,
+          "ft": 0.56
+        },
+        "9": {
+          "Ts": 7.19,
+          "fw": 0.56,
+          "fa": 0.55,
+          "ft": 0.5
+        },
+        "10": {
+          "Ts": 7.12,
+          "fw": 0.57,
+          "fa": 0.56,
+          "ft": 0.51
+        },
+        "11": {
+          "Ts": 7.05,
+          "fw": 0.59,
+          "fa": 0.56,
+          "ft": 0.52
+        },
+        "12": {
+          "Ts": 7.01,
+          "fw": 0.59,
+          "fa": 0.56,
+          "ft": 0.53
+        },
+        "13": {
+          "Ts": 6.89,
+          "fw": 0.61,
+          "fa": 0.58,
+          "ft": 0.54
+        },
+        "14": {
+          "Ts": 6.82,
+          "fw": 0.62,
+          "fa": 0.59,
+          "ft": 0.55
+        },
+        "15": {
+          "Ts": 6.8,
+          "fw": 0.62,
+          "fa": 0.6,
+          "ft": 0.55
+        },
+        "16": {
+          "Ts": 6.86,
+          "fw": 0.61,
+          "fa": 0.59,
+          "ft": 0.54
+        },
+        "17": {
+          "Ts": 7.01,
+          "fw": 0.59,
+          "fa": 0.56,
+          "ft": 0.53
+        },
+        "18": {
+          "Ts": 7.48,
+          "fw": 0.54,
+          "fa": 0.5,
+          "ft": 0.49
+        },
+        "19": {
+          "Ts": 8.49,
+          "fw": 0.5,
+          "fa": 0.5,
+          "ft": 0.47
+        }
+      },
+      "binding": [
+        "coil",
+        "supply_air"
+      ],
+      "assumptions": [
+        "coil_margin = 1.15 (assumed)",
+        "RH_max = 0.55 (assumed)",
+        "T_sa_min = 12.0 (assumed)",
+        "fan_min = 0.5 (assumed)",
+        "vfd_ahu = None (unknown)",
+        "vfd_chw_pump = None (unknown)",
+        "vfd_tower = None (unknown)",
+        "tariff = 8.0 (assumed)"
+      ],
+      "confidence": "MEDIUM",
+      "status": "SUPERSEDED by R2",
+      "validation": "PREDICTED (not validated)",
+      "history": []
+    },
+    {
+      "id": "R2",
+      "summary": "Hourly set-point schedule (CHWS, CHW pump, AHU fan, tower fan)",
+      "daily_kWh_baseline": 2713.419577676491,
+      "daily_kWh_optimised": 1949.308170490498,
+      "saving_pct": 28.16045898217864,
+      "annual_saving_cost": 2200640.8526956597,
+      "setpoints": {
+        "8": {
+          "Ts": 7.23,
+          "fw": 0.66,
+          "fa": 0.75,
+          "ft": 0.56
+        },
+        "9": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.51
+        },
+        "10": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.51
+        },
+        "11": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.52
+        },
+        "12": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.53
+        },
+        "13": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.54
+        },
+        "14": {
+          "Ts": 8.12,
+          "fw": 0.52,
+          "fa": 0.75,
+          "ft": 0.55
+        },
+        "15": {
+          "Ts": 8.12,
+          "fw": 0.52,
+          "fa": 0.75,
+          "ft": 0.55
+        },
+        "16": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.54
+        },
+        "17": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.53
+        },
+        "18": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.5
+        },
+        "19": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 0.48
+        }
+      },
+      "binding": [
+        "coil",
+        "humidity"
+      ],
+      "assumptions": [
+        "coil_margin = 1.15 (assumed)",
+        "T_sa_min = 12.0 (assumed)",
+        "vfd_ahu = None (unknown)",
+        "vfd_chw_pump = None (unknown)",
+        "vfd_tower = None (unknown)",
+        "tariff = 8.0 (assumed)"
+      ],
+      "confidence": "MEDIUM",
+      "status": "SUPERSEDED by R3",
+      "validation": "PREDICTED (not validated)",
+      "history": []
+    },
+    {
+      "id": "R3",
+      "summary": "Hourly set-point schedule (CHWS, CHW pump, AHU fan, tower fan)",
+      "daily_kWh_baseline": 2713.419577676491,
+      "daily_kWh_optimised": 2061.3795182503636,
+      "saving_pct": 24.030196612072473,
+      "annual_saving_cost": 1877875.3711472466,
+      "setpoints": {
+        "8": {
+          "Ts": 7.22,
+          "fw": 0.65,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "9": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "10": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "11": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "12": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "13": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "14": {
+          "Ts": 8.12,
+          "fw": 0.52,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "15": {
+          "Ts": 8.12,
+          "fw": 0.52,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "16": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "17": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "18": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        },
+        "19": {
+          "Ts": 8.12,
+          "fw": 0.5,
+          "fa": 0.75,
+          "ft": 1.0
+        }
+      },
+      "binding": [
+        "coil",
+        "humidity"
+      ],
+      "assumptions": [
+        "coil_margin = 1.15 (assumed)",
+        "T_sa_min = 12.0 (assumed)",
+        "tariff = 8.0 (assumed)"
+      ],
+      "confidence": "MEDIUM",
+      "status": "APPROVED FOR SUPERVISED TRIAL",
+      "validation": "PREDICTED (not validated)",
+      "history": [
+        "approve: engineer approval after VFD confirmation"
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "hour": 15,
+      "quantity": "chiller_load_kW",
+      "measured": 690.0,
+      "predicted": 814.068120866045,
+      "residual": -124.06812086604498,
+      "note": "BMS trend, engineer-provided"
+    }
+  ],
+  "parameters": {
+    "baseline_CHWS": {
+      "value": 7.0,
+      "unit": "\u00b0C",
+      "source": "engineer",
+      "note": "Current chilled-water supply set-point"
+    },
+    "baseline_CHWR": {
+      "value": 12.0,
+      "unit": "\u00b0C",
+      "source": "hypothetical",
+      "note": "Design chilled-water return"
+    },
+    "floors_served": {
+      "value": 14,
+      "unit": "floors",
+      "source": "engineer",
+      "note": "Back-calculated: building peak \u2248 90 % of chiller capacity"
+    },
+    "load_calibration": {
+      "value": 0.8321707856320253,
+      "unit": "-",
+      "source": "measured",
+      "note": "From 1 measurement(s); single-point calibration"
+    },
+    "coil_margin": {
+      "value": 1.15,
+      "unit": "-",
+      "source": "assumed",
+      "note": "Coil capacity margin over predicted peak"
+    },
+    "RH_max": {
+      "value": 0.5,
+      "unit": "-",
+      "source": "engineer",
+      "note": "Max indoor RH"
+    },
+    "T_sa_min": {
+      "value": 12.0,
+      "unit": "\u00b0C",
+      "source": "assumed",
+      "note": "Min supply-air temperature"
+    },
+    "fan_min": {
+      "value": 0.75,
+      "unit": "-",
+      "source": "engineer",
+      "note": "Min AHU airflow fraction"
+    },
+    "vfd_ahu": {
+      "value": true,
+      "unit": "-",
+      "source": "engineer",
+      "note": "AHU fans on VFD?"
+    },
+    "vfd_chw_pump": {
+      "value": true,
+      "unit": "-",
+      "source": "engineer",
+      "note": "CHW pumps on VFD?"
+    },
+    "vfd_tower": {
+      "value": false,
+      "unit": "-",
+      "source": "engineer",
+      "note": "Tower fans on VFD?"
+    },
+    "tariff": {
+      "value": 8.0,
+      "unit": "INR/kWh",
+      "source": "assumed",
+      "note": "Electricity tariff"
+    }
+  }
+}

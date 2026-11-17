@@ -115,6 +115,8 @@ class System:
         return dict(x=dict(zip(VARS, (Ts, fw, fa, ft))), total_kW=total,
                     P=dict(chiller=P_ch, chw_pump=P_chw, cw_pump=self.cw_pump_kW, tower=P_t, fan=P_fan),
                     Q_chiller_kW=Q_ch, Q_coil_kW=Q_coil, ECWT=ecwt, CHWR=Ts + evap_dT,
+                    T_mixed=T_ma, coil_cap_kW=cap, Q_coil_sens_kW=Q_cs, Q_rej_kW=Q_ch + P_ch,
+                    T_dp_required=dew_point(w_req), cap_chiller_kW=cap_ch,
                     T_supply=T_supply, PLR=Q_ch / cap_ch, cop=Q_ch / P_ch, g=g,
                     feasible=all(v >= -1e-6 for v in g.values()))
 
