@@ -71,5 +71,27 @@ def humidity_ratio(t_c: float, rh: float, p_kpa: float = 101.325) -> float:
     return 0.622 * pw / (p_kpa - pw)
 
 
+def dew_point(w: float, p_kpa: float = 101.325) -> float:
+    """Dew-point (°C) from humidity ratio (inverse Magnus)."""
+    pw = w * p_kpa / (0.622 + w)
+    a = math.log(pw / 0.61094)
+    return 243.04 * a / (17.625 - a)
+
+
+def wet_bulb(t_c: float, w: float, p_kpa: float = 101.325) -> float:
+    """Thermodynamic wet-bulb (°C) from dry-bulb and humidity ratio (bisection)."""
+    def w_from_wb(twb):
+        ws = humidity_ratio(twb, 1.0, p_kpa)
+        return ((2501 - 2.326 * twb) * ws - 1.006 * (t_c - twb)) / (2501 + 1.86 * t_c - 4.186 * twb)
+    lo, hi = -10.0, t_c
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if w_from_wb(mid) > w:
+            hi = mid
+        else:
+            lo = mid
+    return (lo + hi) / 2
+
+
 def hours(step_h: float = 1.0):
     return np.arange(0, 24, step_h)

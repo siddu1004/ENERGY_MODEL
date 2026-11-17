@@ -20,9 +20,8 @@ from energy_model import plant  # noqa: E402
 from energy_model.climate import outdoor_temp  # noqa: E402
 from energy_model.defaults import default_registry  # noqa: E402
 from energy_model.geometry import load_usdz  # noqa: E402
-from energy_model.loads import building_loads  # noqa: E402
+from energy_model.pipeline import floor_case  # noqa: E402
 from energy_model.provenance import Source  # noqa: E402
-from energy_model.rc_model import simulate_floor  # noqa: E402
 
 USDZ = ROOT / "sample_data" / "sample_building.usdz"
 XLSX = ROOT / "sample_data" / "sample_chiller_calculations.xlsx"
@@ -30,17 +29,6 @@ OUT = ROOT / "reports" / "stage2"
 TR = 3.51685
 PARTS = ["chiller_kW", "chw_pump_kW", "cw_pump_kW", "tower_fan_kW", "ahu_fan_kW"]
 PART_LABELS = ["Chiller", "CHW pump", "CW pump", "Tower fans", "AHU fans"]
-
-
-def coil_profile(L):
-    return sum(r.coil_total for r in L.values() if r.on_chiller)
-
-
-def floor_case(b, reg, top):
-    L = building_loads(b, reg, top_floor=top)
-    ss = coil_profile(L)
-    dyn = simulate_floor(L, b.floor_area, b.volume, reg, q_max_W=1.3 * ss.max())
-    return L, ss, dyn
 
 
 def fmt(x, nd=1):
